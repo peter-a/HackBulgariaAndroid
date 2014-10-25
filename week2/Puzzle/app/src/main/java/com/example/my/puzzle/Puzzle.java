@@ -20,29 +20,21 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class Puzzle extends Activity implements View.OnDragListener, View.OnTouchListener {
     private GridLayout gridLayout;
 
-    private final String IMAGE_IDS = "imageIds";
-    private List<Integer> imageIds;
-    private List<Integer> viewPositions;
+    private final int rows = 4;
+    private final int cols = 4;
 
-    private final String VIEWS = "views";
+    private final String VIEW_POSITIONS = "positions";
+    private List<ImageView> imageViews;
+    private List<Integer> viewPositions;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        List<Integer> imageIdsNew = new ArrayList<Integer>();
-        for(int i = 0; i < imageIds.size(); i++)  {
-            imageIdsNew.add(-1);
-        }
-        for(int i = 0; i < imageIds.size(); i++)  {
-            int ithViewPosition = viewPositions.get(i);
-            imageIdsNew.set(ithViewPosition, imageIds.get(i));
-        }
-        outState.putIntegerArrayList(IMAGE_IDS, (ArrayList<Integer>) imageIdsNew);
+        outState.putIntegerArrayList(VIEW_POSITIONS, (ArrayList<Integer>) viewPositions);
     }
 
     @Override
@@ -52,46 +44,53 @@ public class Puzzle extends Activity implements View.OnDragListener, View.OnTouc
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        viewPositions = new ArrayList<Integer>();
-        for (int i = 0; i < 16; i++) {
-            viewPositions.add(i);
+        imageViews = new ArrayList<ImageView>();
+        TypedArray images = getResources().obtainTypedArray(R.array.images);
+        for (int i = 0; i < rows * cols; i++) {
+            ImageView next = new ImageView(this);
+            imageViews.add(next);
         }
 
-        if(savedInstanceState == null)  {
-            imageIds = new ArrayList<Integer>();
-            for (int i = 0; i < 16; i++) {
-                imageIds.add(i);
+        if (savedInstanceState == null) {
+            viewPositions = new ArrayList<Integer>();
+            for (int i = 0; i < rows * cols; i++) {
+                ImageView next = imageViews.get(i);
+                next.setTag(i);
+                next.setImageDrawable(images.getDrawable(i));
+                viewPositions.add(-1);
             }
-            Collections.shuffle(imageIds);
+            Collections.shuffle(imageViews);
+            for (int i = 0; i < rows * cols; i++) {
+                Integer ithPositionView = (Integer) imageViews.get(i).getTag();
+                viewPositions.set(ithPositionView, i);
+            }
         } else {
-            imageIds = savedInstanceState.getIntegerArrayList(IMAGE_IDS);
+            viewPositions = savedInstanceState.getIntegerArrayList(VIEW_POSITIONS);
+            for (int i = 0; i < rows * cols; i++) {
+                int ithViewPosition = viewPositions.get(i);
+                ImageView view = imageViews.get(ithViewPosition);
+                view.setTag(i);
+                view.setImageDrawable(images.getDrawable(i));
+            }
         }
+
         gridLayout = (GridLayout) findViewById(R.id.gridLayout);
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         int displayWidth = size.x;
         int quarterWidth = (displayWidth / 4) - 4;
 
-        TypedArray images = getResources().obtainTypedArray(R.array.images);
-
         for (int i = 0; i < images.length(); i++) {
-            ImageView view = new ImageView(this);
+            ImageView next = imageViews.get(i);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = quarterWidth;
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.setMargins(2, 2, 2, 2);
-            view.setLayoutParams(params);
-            view.setAdjustViewBounds(true);
-            if(savedInstanceState == null) {
-                view.setImageDrawable(images.getDrawable(imageIds.get(i)));
-            } else {
-                view.setImageDrawable(images.getDrawable(imageIds.get(viewPositions.get(i))));
-            }
-            view.setTag(imageIds.get(i));
-            view.setOnDragListener(this);
-            view.setOnTouchListener(this);
-            view.setTag(new Integer(i));
-            gridLayout.addView(view);
+            next.setLayoutParams(params);
+            next.setAdjustViewBounds(true);
+            next.setOnDragListener(this);
+            next.setOnTouchListener(this);
+            gridLayout.addView(next);
         }
     }
 
@@ -140,10 +139,9 @@ public class Puzzle extends Activity implements View.OnDragListener, View.OnTouc
     }
 
     private boolean isArranged() {
-        for (int i = 0; i < imageIds.size(); i++) {
+        for (int i = 0; i < imageViews.size(); i++) {
             int position = viewPositions.get(i);
-            int id = imageIds.get(i);
-            if (id != position) {
+            if (i != position) {
                 return false;
             }
         }
