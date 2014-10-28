@@ -105,7 +105,7 @@ public class MyActivity extends Activity implements View.OnDragListener, View.On
             correspondingImageIndexex.set(sourceId, correspondingImageIndexex.get(destinationId));
             correspondingImageIndexex.set(destinationId, sourceImageId);
             if(isArranged())  {
-                Toast toast = Toast.makeText(this, "Congratiolations! You have completed the puzzle.", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(this, getResources().getString(R.string.puzzle_complete), Toast.LENGTH_LONG);
                 toast.show();
             }
         }

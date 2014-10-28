@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PuzzleGame</string>
+    <string name="app_name">KeyFrameAnimator</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="puzzle_complete">Congratulations! You have completed the puzzle.</string>
+    <string name="label_save">Save frame</string>
+    <string name="label_play">Play</string>
 
 </resources>
