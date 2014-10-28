@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/happy_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/green"
+            android:adjustViewBounds="true"
+            android:onClick="changeBitmap"/>
+
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/scared_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/red"
+            android:adjustViewBounds="true"
+            android:onClick="changeBitmap"/>
+
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/crying_image"
+            android:layout_width="0dp"
+            android:adjustViewBounds="true"
+            android:layout_height="wrap_content"
+            android:src="@drawable/blue"
+            android:onClick="changeBitmap"/>
+    </LinearLayout>
+    <com.example.my.drawablebrush.CustomImageView
+        android:id="@+id/custom_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
